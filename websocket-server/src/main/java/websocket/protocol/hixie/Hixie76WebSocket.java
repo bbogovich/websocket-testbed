@@ -9,12 +9,14 @@ import java.util.Properties;
 import websocket.WebSocket;
 import websocket.protocol.Frame;
 import websocket.protocol.WebSocketProtocol;
+import org.apache.log4j.Logger;
 
 
 public class Hixie76WebSocket implements WebSocketProtocol {
 	private Properties headers;
 	private String path;
 	private WebSocket websocket;
+	private Logger logger = Logger.getLogger(Hixie76WebSocket.class);
 	/**
 	   * The byte representing the beginning of a WebSocket text frame.
 	   */
@@ -79,7 +81,7 @@ public class Hixie76WebSocket implements WebSocketProtocol {
 			try {
 				md5 = MessageDigest.getInstance("MD5");
 				responseChallenge = md5.digest(challenge);
-				System.out.println("Response Challenge: "+responseChallenge);
+				logger.debug("Response Challenge: "+responseChallenge);
 			} catch (NoSuchAlgorithmException e) {
 				//This will never happen, it's built into the JRE
 				e.printStackTrace();

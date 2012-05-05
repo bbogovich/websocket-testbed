@@ -12,25 +12,6 @@
 	<packaging>jar</packaging>
 	<name>WebSocket Server</name>
 	<dependencies>
-		<!--
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
-		</dependency>-->
-		<!-- Library for JSON serialization -
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.6.0</version>
-		</dependency>-->
-		<!-- Logger -
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.13</version>
-		</dependency>-->
 	</dependencies>
 	<build>
 		<finalName>websocket-server</finalName>

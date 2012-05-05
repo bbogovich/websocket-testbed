@@ -4,10 +4,11 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 import websocket.protocol.Frame;
+import org.apache.log4j.Logger;
 
 
 public class Hixie76Frame implements Frame {
-	
+	private Logger logger = Logger.getLogger(Hixie76Frame.class);
 	public Hixie76Frame(){}
 	public Hixie76Frame(byte[] frameData){
 		populate(frameData);
@@ -31,7 +32,7 @@ public class Hixie76Frame implements Frame {
 	public static final byte END_OF_FRAME = (byte) 0xFF;
 
 	public byte[] populate(byte[] frameData) {
-		System.out.println("populate..");
+		logger.debug("populate..");
 		boolean readingState=false;
 		int bytesRead=0;
 		//boolean frameCompleted=false;
@@ -39,10 +40,10 @@ public class Hixie76Frame implements Frame {
 		for (byte newestByte:frameData){
 			bytesRead++;
 			if (newestByte == START_OF_FRAME && !readingState) {
-				System.out.println("frame start");
+				logger.debug("frame start");
 				readingState=true;
 			}else if(newestByte == END_OF_FRAME && readingState){
-				System.out.println("frame end");
+				logger.debug("frame end");
 				//frameCompleted=true;
 				readingState=false;
 				payloadData = payloadBuffer.array();
@@ -51,8 +52,8 @@ public class Hixie76Frame implements Frame {
 				payloadBuffer.put(newestByte);
 			}
 		}
-		System.out.println(payloadData);
-		System.out.println("payload len: "+payloadData.length);
+		logger.debug(payloadData);
+		logger.debug("payload len: "+payloadData.length);
 		messageFrame = (payloadData.length>0);
 		byte[] unprocessedBytes = new byte[frameData.length-bytesRead];
 		int j=0;

@@ -4,11 +4,12 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 import websocket.protocol.Frame;
+import org.apache.log4j.Logger;
 
 
 public class Hybi07Frame implements Frame{
 	private enum PayloadLengthType {SHORT_7BIT,EXTENDED_16BIT,EXTENDED_64BIT};
-
+	private Logger logger = Logger.getLogger(Hybi07Frame.class);
 	boolean finalFragment=true;
 	boolean rsv1=false;
 	boolean rsv2=false;
@@ -141,91 +142,91 @@ public class Hybi07Frame implements Frame{
 				frame_masking_key_buffer = new byte[4];
 				payload_frame_position=0;
 				frame_payload_text = new StringBuffer();
-				System.out.println("Start reading for a frame fragment for draft 07");
+				logger.debug("Start reading for a frame fragment for draft 07");
 				/*
 				 * first byte is FIN,RSV1,RSV2,RSV3,OPCODE(4 bits)
 				 * */
 				finalFragment = (newestByte & 0x80) == 0x80;
 				if(finalFragment){
-					System.out.println("FIN is set to 1, this is the last fragment");
+					logger.debug("FIN is set to 1, this is the last fragment");
 				}else{
-					System.out.println("FIN is set to 0, there area additional frame fragments");
+					logger.debug("FIN is set to 0, there area additional frame fragments");
 				}
 				rsv1 = (newestByte&0x40)==0x40;
 				if(rsv1){
-					System.out.println("RSV1 is set to 1");
+					logger.debug("RSV1 is set to 1");
 				}else{
-					System.out.println("RSV1 is set to 0");
+					logger.debug("RSV1 is set to 0");
 				}
 				rsv2 = (newestByte&0x20)==0x20;
 				if(rsv2){
-					System.out.println("RSV2 is set to 1");
+					logger.debug("RSV2 is set to 1");
 				}else{
-					System.out.println("RSV2 is set to 0");
+					logger.debug("RSV2 is set to 0");
 				}
 				rsv3 = (newestByte&0x10)==0x10;
 				if(rsv3){
-					System.out.println("RSV3 is set to 1");
+					logger.debug("RSV3 is set to 1");
 				}else{
-					System.out.println("RSV3 is set to 0");
+					logger.debug("RSV3 is set to 0");
 				}
 				short opcode = (short)(newestByte & 0x0F);
 				if(opcode==0x08){
-					System.out.println("Opcode: Connection Close");
+					logger.debug("Opcode: Connection Close");
 					//websocket.getSocket().close();
 					this.opCode=OpCode.CONNECTION_CLOSE;
 				}else if(opcode==0x02){
-					System.out.println("Opcode: Binary Frame");
+					logger.debug("Opcode: Binary Frame");
 					this.opCode=OpCode.BINARY_FRAME;
 				}else if(opcode==0x01){
-					System.out.println("Opcode: Text Frame");
+					logger.debug("Opcode: Text Frame");
 					this.opCode=OpCode.TEXT_FRAME;
 				}else if(opcode==0x00){
-					System.out.println("Opcode: Continuation Frame");
+					logger.debug("Opcode: Continuation Frame");
 					this.opCode=OpCode.CONTINUATION_FRAME;
 				}else if(opcode==0x0A){
-					System.out.println("Opcode: Ping");
+					logger.debug("Opcode: Ping");
 					this.opCode=OpCode.PING;
 				}else if(opcode==0x0B){
-					System.out.println("Opcode: Pong");
+					logger.debug("Opcode: Pong");
 					this.opCode=OpCode.PONG;
 				}else{
-					System.out.println("Unknown Opcode: "+Integer.toString(opcode,2));
+					logger.debug("Unknown Opcode: "+Integer.toString(opcode,2));
 					this.opCode=null;
 				}
 				readingState=true;
 			}else{
 				frame_byte_count++;
-				System.out.println("Reading byte "+frame_byte_count+" for a frame fragment already in progress for draft 07");
+				logger.debug("Reading byte "+frame_byte_count+" for a frame fragment already in progress for draft 07");
 				if(frame_byte_count==2){
-					System.out.println("Byte is mask + payload");
+					logger.debug("Byte is mask + payload");
 					masked=(newestByte & 0x80)==0x80;
 					if(masked){
-						System.out.println("Payload is masked");
+						logger.debug("Payload is masked");
 					}else{
-						System.out.println("Payload is not masked");
+						logger.debug("Payload is not masked");
 					}
 					int payloadLength=0x07F&newestByte;
-					System.out.println("Payload length = "+payloadLength);
+					logger.debug("Payload length = "+payloadLength);
 					int payload_length=0x7F&newestByte;
 					if(payload_length==126){
-						System.out.println("Payload length is extended 16 bit");
+						logger.debug("Payload length is extended 16 bit");
 						frame_payload_length_type=PayloadLengthType.EXTENDED_16BIT;
 						frame_extended_payload_length_buffer = new byte[2];
 					}else if(payload_length==127){
-						System.out.println("Payload length is extended 64 bit");
+						logger.debug("Payload length is extended 64 bit");
 						frame_payload_length_type=PayloadLengthType.EXTENDED_64BIT;
 						frame_extended_payload_length_buffer = new byte[8];
 					}else{
-						System.out.println("Final Payload length is "+payloadLength);
+						logger.debug("Final Payload length is "+payloadLength);
 						frame_payload_length=payload_length;
 						frame_payload = ByteBuffer.allocate((int)frame_payload_length);
 					}
 				}else if(frame_byte_count<=4&&frame_payload_length_type==PayloadLengthType.EXTENDED_16BIT){
-					System.out.println("Processing an extended-16 payload length");
+					logger.debug("Processing an extended-16 payload length");
 					frame_extended_payload_length_buffer[frame_byte_count-3]=newestByte;
 					if(frame_byte_count==4){
-						System.out.println("Frame payload length complete");
+						logger.debug("Frame payload length complete");
 						//process payload length buffer as an unsigned integer
 						//cast the bytes to ints so that we don't get negative numbers
 						int firstByte=0;
@@ -234,13 +235,13 @@ public class Hybi07Frame implements Frame{
 						secondByte = (0x000000FF & ((int)frame_extended_payload_length_buffer[1]));
 						frame_payload_length = (long)(firstByte<<8|secondByte);
 						frame_payload = ByteBuffer.allocate((int)frame_payload_length);
-						System.out.println("Payload Length = "+frame_payload_length);
+						logger.debug("Payload Length = "+frame_payload_length);
 					}
 				}else if(frame_byte_count<=10&&frame_payload_length_type==PayloadLengthType.EXTENDED_64BIT){
-					System.out.println("Processing an extended-64 payload length");
+					logger.debug("Processing an extended-64 payload length");
 					frame_extended_payload_length_buffer[frame_byte_count-3]=newestByte;
 					if(frame_byte_count==10){
-						System.out.println("Frame payload length complete");
+						logger.debug("Frame payload length complete");
 						//process payload length buffer as an unsigned integer
 						//Problem - java longs are 64-bit signed; the incoming wire data is 64-bit bytes
 						//this causes an issue in that we can potentially lose the last byte on a maximum
@@ -258,44 +259,44 @@ public class Hybi07Frame implements Frame{
 						if(frame_payload_length<0){
 							frame_payload_length = frame_payload_length*-1;
 							frame_payload_length_overflow=true;
-							System.out.println("Frame payload length (extended-64bit) overflow!	TODO: HANDLE OVERFLOW CASE");
+							logger.debug("Frame payload length (extended-64bit) overflow!	TODO: HANDLE OVERFLOW CASE");
 						}
 						frame_payload = ByteBuffer.allocate((int)frame_payload_length);
 					}
 					if(frame_payload_length_overflow){
-					    System.out.println("Somehow the frame payload was longer than a 2^64 characters.");
+					    logger.debug("Somehow the frame payload was longer than a 2^64 characters.");
 					}
 				}else if(masked&&frame_masking_key_byte_count<4){ //still reading masking key bytes
-					System.out.println("Setting frame masking key buffer byte "+frame_masking_key_byte_count);
+					logger.debug("Setting frame masking key buffer byte "+frame_masking_key_byte_count);
 					frame_masking_key_buffer[frame_masking_key_byte_count++]=newestByte;
 					if(frame_masking_key_byte_count==4){ //end of masking key
-						System.out.println("Finished processing frame masking key");
+						logger.debug("Finished processing frame masking key");
 						long byte0=(0x000000FF & ((int)frame_masking_key_buffer[0]));
 						int byte1=(0x000000FF & ((int)frame_masking_key_buffer[1]));
 						int byte2=(0x000000FF & ((int)frame_masking_key_buffer[2]));
 						int byte3=(0x000000FF & ((int)frame_masking_key_buffer[3]));
 						maskingKey=(long)(byte0<<24|byte1<<16|byte2<<8|byte3);
-						System.out.println("Masking key:	"+Long.toString(maskingKey,2));
+						logger.debug("Masking key:	"+Long.toString(maskingKey,2));
 					}
 				}else if (masked){
-					System.out.println("Processing masked payload data "+newestByte);
+					logger.debug("Processing masked payload data "+newestByte);
 					int mask_byte_index = (int) (payload_frame_position%4);
-					System.out.println("Applying mask transformation for index "+mask_byte_index+" to byte");
+					logger.debug("Applying mask transformation for index "+mask_byte_index+" to byte");
 					byte transformedByte = (byte) (newestByte ^ frame_masking_key_buffer[mask_byte_index]);
-					System.out.println("Transformed byte: "+(char)transformedByte);
+					logger.debug("Transformed byte: "+(char)transformedByte);
 					frame_payload_text.append(new String(new byte[] {transformedByte},UTF8_CHARSET));
 					frame_payload.put(transformedByte);
 					payload_frame_position++;
 					if(frame_payload_text.length()==frame_payload_length){
-						System.out.println("End of text frame.	Payload Data: "+frame_payload_text.toString());
+						logger.debug("End of text frame.	Payload Data: "+frame_payload_text.toString());
 						readingState=false;
 						String frame_text = frame_payload_text.toString();
 						frame_payload_text=null;
-						System.out.println("Frame Text:  "+frame_text);
+						logger.debug("Frame Text:  "+frame_text);
 						//this.wsl.onMessage(this, frame_text);
 					}
 				}else{
-					System.out.println("Processing unmasked payload data "+newestByte);
+					logger.debug("Processing unmasked payload data "+newestByte);
 					frame_payload_text.append(new String(new byte[] {newestByte},Charset.forName("UTF-8")));
 					frame_payload.put(newestByte);
 					payload_frame_position++;
@@ -352,7 +353,7 @@ public class Hybi07Frame implements Frame{
 			extendedPayloadLengthBytes[0] = (byte)((payloadLength>>54) & 0x00FF);
 			frameLength+=8;
 		}
-		System.out.println("Payload type detected as:"+payloadLengthType);
+		logger.debug("Payload type detected as:"+payloadLengthType);
 		//Byte 1 - set FIN to 1, RSV1,2,3 to 0, opcode to this.opcode
 		//Byte 2 - Mask is 0 - by protocol definition server messages are unmasked, remaining value based on payload length
 		/*

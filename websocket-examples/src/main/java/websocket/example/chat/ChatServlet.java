@@ -10,12 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import websocket.example.chat.response.StatusResponse;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.apache.log4j.Logger;
 
 
 public class ChatServlet extends HttpServlet {
 	ChatServer chatServer;
 	private Thread websocketThread;
 	private ObjectMapper mapper = new ObjectMapper();
+	Logger logger = Logger.getLogger(ChatServlet.class);
 	/**
 	 * 
 	 */
@@ -23,7 +25,7 @@ public class ChatServlet extends HttpServlet {
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
-		System.out.println("ChatServlet.init");
+		logger.debug("ChatServlet.init");
 		//super.init(config);
 		chatServer = new ChatServer(Integer.parseInt(config.getInitParameter("port")));
 		
@@ -34,12 +36,12 @@ public class ChatServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		System.out.println("ChatServlet.doPost");
+		logger.debug("ChatServlet.doPost");
 		String uri = req.getRequestURI().toString();
 		String servletPath = req.getServletPath();
-		System.out.println(servletPath);
-		System.out.println(uri);
-		System.out.println(req.getContextPath());
+		logger.debug(servletPath);
+		logger.debug(uri);
+		logger.debug(req.getContextPath());
 		if(("/chatsocket/initialize.do").equals(servletPath)){
 			resp.setStatus(200);
 			resp.getWriter().write(req.getSession().getId());

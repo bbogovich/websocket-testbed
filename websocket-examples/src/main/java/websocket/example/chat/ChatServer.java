@@ -73,7 +73,7 @@ public class ChatServer extends DefaultWebSocketServer {
 	 * Where messageType is the class name the object is mapped to and JSONObject is a JSON-encoded object 
 	 */
 	public void onMessage(WebSocket websocket, String message) throws IOException {
-		System.out.println("Message Received: "+message);
+		logger.debug("Message Received: "+message);
 		int nullSplit = message.indexOf("|");
 		String messageClassName = message.substring(0,nullSplit);
 		String messageBody = message.substring(nullSplit+1,message.length());

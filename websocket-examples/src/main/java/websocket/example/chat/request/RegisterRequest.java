@@ -5,13 +5,14 @@ import java.io.IOException;
 import websocket.WebSocket;
 import websocket.example.chat.ChatServer;
 import websocket.example.chat.response.RegistrationSuccessResponse;
+import org.apache.log4j.Logger;
 
 
 public class RegisterRequest implements ChatRequest {
 	private long transactionId;
 	private String userName;
 	private String sessionId;
-	
+	private Logger logger = Logger.getLogger(RegisterRequest.class);
 	public String getUserName() {
 		return userName;
 	}
@@ -29,7 +30,7 @@ public class RegisterRequest implements ChatRequest {
 	}
 
 	public void handleRequest(ChatServer chatServer, WebSocket websocket) throws IOException {
-		System.out.println("Registration request received for user "+userName+" with session id "+sessionId);
+		logger.debug("Registration request received for user "+userName+" with session id "+sessionId);
 		chatServer.registerUser(userName, sessionId, websocket);
 		chatServer.send(new RegistrationSuccessResponse(), websocket);
 	}

@@ -2,6 +2,7 @@ package websocket.example;
 
 import websocket.WebSocket;
 import websocket.server.DefaultWebSocketServer;
+import org.apache.log4j.Logger;
 
 public class EchoServer extends DefaultWebSocketServer {
 	public EchoServer(int port) {
@@ -9,7 +10,7 @@ public class EchoServer extends DefaultWebSocketServer {
 	}
 	
 	public void onMessage(WebSocket websocket, String message) {
-		System.out.println("Message Received: "+message);
+		logger.debug("Message Received: "+message);
 		this.sendToAll("New Message:  "+message);
 	}
 

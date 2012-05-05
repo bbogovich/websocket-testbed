@@ -14,10 +14,10 @@ public abstract class SSLWebSocketServer extends DefaultWebSocketServer {
 	public void run() {
 		try{
 			SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
-			System.out.println("Starting SSL server on port "+this.getPort());
+			logger.debug("Starting SSL server on port "+this.getPort());
 			SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(this.getPort());
 			while(true){
-				System.out.println("Waiting for new connection");
+				logger.debug("Waiting for new connection");
 				SSLSocket sslSocket = (SSLSocket) sslserversocket.accept();
 				WebSocket connection = new WebSocket(this,sslSocket);
 				this.connections.add(connection);
@@ -25,7 +25,7 @@ public abstract class SSLWebSocketServer extends DefaultWebSocketServer {
 				t.start();
 			}
 		} catch (IOException ioe) {
-			System.out.println("IOException on socket listen: " + ioe);
+			logger.debug("IOException on socket listen: " + ioe);
 			ioe.printStackTrace();
 		}
 	}

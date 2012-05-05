@@ -8,11 +8,12 @@ import java.util.Set;
 
 import websocket.WebSocket;
 
-
+import org.apache.log4j.Logger;
 
 public abstract class DefaultWebSocketServer implements WebSocketServer {
 	private int port;
 	protected Set<WebSocket> connections;
+	protected Logger logger = Logger.getLogger(DefaultWebSocketServer.class);
 	
 	public int getPort(){
 		return this.port;
@@ -29,10 +30,10 @@ public abstract class DefaultWebSocketServer implements WebSocketServer {
 
 	public void run() {
 		try{
-			System.out.println("Starting server on port "+port);
+			logger.debug("Starting server on port "+port);
 			ServerSocket listener = new ServerSocket(port);
 			while(true){
-				System.out.println("Waiting for new connection");
+				logger.debug("Waiting for new connection");
 				Socket server = listener.accept();
 				WebSocket connection = new WebSocket(this,server);
 				connections.add(connection);
@@ -40,7 +41,7 @@ public abstract class DefaultWebSocketServer implements WebSocketServer {
 				t.start();
 			}
 		} catch (IOException ioe) {
-			System.out.println("IOException on socket listen: " + ioe);
+			logger.debug("IOException on socket listen: " + ioe);
 			ioe.printStackTrace();
 		}
 	}

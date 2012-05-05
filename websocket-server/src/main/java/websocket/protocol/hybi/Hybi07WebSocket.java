@@ -13,6 +13,7 @@ import java.util.Properties;
 import websocket.WebSocket;
 import websocket.protocol.Frame;
 import websocket.protocol.WebSocketProtocol;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -24,7 +25,7 @@ public class Hybi07WebSocket implements WebSocketProtocol {
 	enum FrameType {CONTINUATION,TEXT,BINARY,RESERVED,CONNECTION_CLOSE,PING,PONG};
 	private Properties headers;
 	private WebSocket websocket;
-	
+	private Logger logger = Logger.getLogger(Hybi07WebSocket.class);
 	public Hybi07WebSocket(WebSocket websocket,Properties headers){
 		this.headers=headers;
 		this.websocket = websocket;
@@ -43,7 +44,7 @@ public class Hybi07WebSocket implements WebSocketProtocol {
 	 */
 	public byte[] processHandshake(byte[] handshake) {
 		String acceptHeader=generateSecWebSocketAcceptHeader(headers.getProperty("Sec-WebSocket-Key"));
-		System.out.println("Response Key:"+acceptHeader);
+		logger.debug("Response Key:"+acceptHeader);
 		String response = "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" +
 				"Upgrade: WebSocket\r\n" +
 				"Connection: Upgrade\r\n" +
@@ -67,7 +68,7 @@ public class Hybi07WebSocket implements WebSocketProtocol {
 	}
 	
 	public byte[] processFrame(byte[] frameData) throws IOException {
-		System.out.println("Hybi07-processFrame");
+		logger.debug("Hybi07-processFrame");
 		Hybi07Frame newFrame = new Hybi07Frame();
 		byte[] unusedData = newFrame.populate(frameData);
 		if(!newFrame.isFinalFragment()){
@@ -94,7 +95,7 @@ public class Hybi07WebSocket implements WebSocketProtocol {
 	}
 
 	public byte[] prepareSendMessage(String text) {
-		System.out.println("prepareSendMessage("+text+")");
+		logger.debug("prepareSendMessage("+text+")");
 		Hybi07Frame frame = new Hybi07Frame();
 		frame.setOpCode(OpCode.TEXT_FRAME);
 		frame.setFinalFragment(true);

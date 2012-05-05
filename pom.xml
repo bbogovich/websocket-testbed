@@ -2,30 +2,16 @@
 		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.brbonline</groupId>
-	<artifactId>websocket-server-test</artifactId>
-	<packaging>war</packaging>
+	<artifactId>websocket-testbed</artifactId>
+	<packaging>pom</packaging>
 	<version>0.0.1</version>
-	<name>websocket-server-test Maven Webapp</name>
-	<url>http://maven.apache.org</url>
+	<name>WebSocket Testbed Parent POM</name>
+	<url>https://github.com/bbogovich/websocket-testbed</url>
+	<modules>
+		<module>websocket-server</module>
+		<module>websocket-examples</module>
+	</modules>
 	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
-			<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- Library for JSON serialization -->
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.6.0</version>
-		</dependency>
 		<!-- Logger -->
 		<dependency>
 			<groupId>log4j</groupId>
@@ -34,6 +20,17 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>websocket-server-test</finalName>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 </project>

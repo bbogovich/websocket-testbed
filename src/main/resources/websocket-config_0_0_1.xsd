@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+		targetNamespace="http://www.example.org/websocket-config_0_0_1" 
+		xmlns:tns="http://www.example.org/websocket-config_0_0_1"
+		elementFormDefault="qualified">
+	<annotation>
+		<documentation xml:lang="en">Websocket Server Configuration</documentation>
+	</annotation>
+	<element name="websocket-config" type="tns:websocket-config-type">
+		<annotation>
+			<documentation xml:lang="en">Root element</documentation>
+		</annotation>
+	</element>
+	<complexType name="websocket-config-type">
+		<sequence>
+			<element name="websocket" minOccurs="0" maxOccurs="unbounded" type="tns:websocket-type">
+				<annotation>
+					<documentation xml:lang="en">Defines a websocket.</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+	<complexType name="websocket-type">
+		<annotation>
+			<documentation xml:lang="en">Defines a websocket to open on the port specified by "port"</documentation>
+		</annotation>
+		<sequence>
+			<element name="handler" minOccurs="1" maxOccurs="unbounded" type="tns:handler-type">
+				<annotation>
+					<documentation xml:lang="en">Mapping from a URL to a handler class</documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="port" type="string">
+			<annotation>
+				<documentation xml:lang="en">Port the websocket should listen on</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+	<complexType name="handler-type">
+		<annotation>
+			<documentation xml:lang="en">Maps a class implementing WebSocketHandler to the specified URL.  Allows reuse of a single websocket server for multiple namespaces.</documentation>
+		</annotation>
+		<attribute name="url" type="string">
+			<annotation>
+				<documentation xml:lang="en">Relative URL to use for the mapping.</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="class" type="string">
+			<annotation><documentation xml:lang="en">Fully-qualified class name of a class implementing WebSocketHandler.</documentation></annotation>
+		</attribute>
+	</complexType>
+</schema>

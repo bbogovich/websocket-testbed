@@ -1,0 +1,6 @@
+<websocket-config  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns="http://www.example.org/websocket-config_0_0_1">
+	<websocket port="8082">
+		<handler url="/" class="websocket.DefaultWebSocketHandler"/>
+	</websocket>
+</websocket-config>

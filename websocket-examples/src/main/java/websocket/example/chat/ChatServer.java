@@ -97,11 +97,13 @@ public class ChatServer extends DefaultWebSocketServer {
 	public void onClientDisconnect(WebSocket websocket) throws IOException {
 		// TODO Auto-generated method stub
 		super.onClientDisconnect(websocket);
-		try {
+		/*
+		 * try {
 			websocket.disconnect();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		*/
 		if(sessionMap.containsKey(websocket)){
 			String sessionId = sessionMap.get(websocket);
 			chatUsers.remove(sessionId);

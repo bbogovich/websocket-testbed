@@ -104,31 +104,41 @@ public class Hybi07WebSocket implements WebSocketProtocol {
 	}
 
 	public void setWebSocket(WebSocket websocket) {
-		// TODO Auto-generated method stub
 		this.websocket = websocket;
 	}
 
 	public void close(StatusCode statusCode,String message) throws IOException {
-		Hybi07Frame closeFrame = new Hybi07Frame();
-		closeFrame.setOpCode(OpCode.CONNECTION_CLOSE);
-		byte[] payload = new byte[message.length()+2];
-		payload[0] = (byte)((statusCode.getCode() >> 8)&0x0FF);
-		payload[1] = (byte)(statusCode.getCode()&0x0FF);
-		int messageSize = message.length();
-		byte[] messageBytes=message.getBytes(Charset.forName("UTF-8"));
-		for (int i=0;i<messageSize;i++){
-			payload[i+2]=messageBytes[i];
-		}
-		closeFrame.setPayloadData(payload);
+		logger.debug("close("+statusCode+","+message+")");
 		Socket socket = this.websocket.getSocket();
-		DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-		out.write(closeFrame.getFrameBytes());
-		out.flush();
-		socket.close();
+		if(socket!=null&&!socket.isClosed()){
+			Hybi07Frame closeFrame = new Hybi07Frame();
+			closeFrame.setOpCode(OpCode.CONNECTION_CLOSE);
+			int messageSize = 0;
+			byte[] messageBytes={};
+			if(message!=null){
+				messageSize = message.length();
+				messageBytes = message.getBytes(Charset.forName("UTF-8"));
+			}
+			byte[] payload = new byte[messageSize+2];
+			if(statusCode==null){
+				statusCode = StatusCode.NORMAL_CLOSURE;
+			}
+			payload[0] = (byte)((statusCode.getCode() >> 8)&0x0FF);
+			payload[1] = (byte)(statusCode.getCode()&0x0FF);
+			for (int i=0;i<messageSize;i++){
+				payload[i+2]=messageBytes[i];
+			}
+			closeFrame.setPayloadData(payload);
+			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+			out.write(closeFrame.getFrameBytes());
+			out.flush();
+			socket.close();
+		}
 		this.websocket.onClose();
 	}
 	
 	public void close() throws IOException{
+		logger.debug("close()");
 		close(null,null);
 	}
 

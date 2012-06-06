@@ -14,6 +14,7 @@ public abstract class DefaultWebSocketServer implements WebSocketServer {
 	private int port;
 	protected Set<WebSocket> connections;
 	protected Logger logger = Logger.getLogger(DefaultWebSocketServer.class);
+	private int connectionIndex=0;
 	
 	public int getPort(){
 		return this.port;
@@ -38,6 +39,7 @@ public abstract class DefaultWebSocketServer implements WebSocketServer {
 				WebSocket connection = new WebSocket(this,server);
 				connections.add(connection);
 				Thread t = new Thread(connection);
+				t.setName("websocket_"+(connectionIndex++));
 				t.start();
 			}
 		} catch (IOException ioe) {

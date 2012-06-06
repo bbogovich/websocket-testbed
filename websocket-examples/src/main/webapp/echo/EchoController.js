@@ -1,48 +1,3 @@
-<!doctype HTML>
-<html>
-	<head>
-		<style>
-#chatOutput{
-	height: 250px;
-	border: 1px black solid;
-	overflow-y: scroll;
-}
-		</style>
-		<script>
-
-		</script>
-		<script>
-var SESSION_ID;
-(function initializeHttpSession(){
-	var request = new XMLHttpRequest();
-	request.open("POST","echosocket/initialize.do",false);
-	SESSION_ID=request.send(null);
-})();
-		/*
-		
-
-		*/
-function loadScript(scriptURL /*,Function <callback>*/){
-	var callback=(arguments.length>1)?arguments[1]:null;
-	var ele=document.createElement('SCRIPT');
-	if(ele.readyState==null){
-		ele.addEventListener("load",function(e){
-			if(typeof(callback)=='function')callback()
-		},false);
-	}else{
-		ele.onreadystatechange=function(){
-			if((ele.readyState=='loaded')||(ele.readyState=='complete')){
-				setTimeout("",0);
-				if(typeof(callback)=='function')callback();
-			}
-		}
-	};
-	ele.setAttribute('type','text/javascript');
-	ele.setAttribute('language','JavaScript');
-	ele.setAttribute('src',scriptURL);
-	document.getElementsByTagName('head')[0].appendChild(ele);
-	return true;
-}
 EchoController = new function(){
 	var $this=this;
 	var websocket=null;
@@ -134,30 +89,3 @@ EchoController = new function(){
 		}
 	}
 }
-function sendChatMessage(form){
-	EchoController.sendMessage(form.message.value)
-}
-		</script>
-	</head>
-	<body>
-		<h1>WebSocket test</h1>
-		<p>Test implementation of a WebSocket server</p>
-		<h3>Compatibility:</h3>
-		<ul>
-			<li>Firefox 6.0.2: Native using MozWebSocket (hybi-07)</li>
-			<li>Firefox 7: Native using MozWebSocket (hybi-08)</li>
-			<li>Safari-Desktop: Native WebSocket (DRAFT-76)</li>
-			<li>Chrome 14: Native using WebSocket (hybi-08)</li>
-			<li>Internet Explorer 9: Flash Bridge (DRAFT-76)</li>
-			<li>Opera: Flash Bridge (DRAFT-76)</li>
-		</ul>
-		<div id="chatContainer">
-			<h2>Echo Test</h2>
-			<div><button onclick="EchoController.connect();">Connect</button><button onclick="EchoController.disconnect();">Disconnect</button></div>
-			<form href="#" onsubmit="sendChatMessage(this);return false;" name="chatInput"><input type="text" size="100" name="message"/><button type="button" onclick="sendChatMessage(this.form)">Send</button></form>
-			<div id="chatOutput">
-				
-			</div>
-		</div>
-	</body>
-</html>

@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +39,7 @@ public class WebSocket implements Runnable {
 	private String webSocketURL;
 	DataOutputStream out;
 	private ProtocolVersion protocolVersion;
+	private Set<WebSocketMessageListener> messageListeners = new HashSet<WebSocketMessageListener>();
 	
 	public WebSocket(WebSocketServer websocketServer,Socket socket) throws IOException{
 		this.websocketServer=websocketServer;
@@ -267,10 +270,20 @@ public class WebSocket implements Runnable {
 	
 	public void onMessageReceived(String message) throws IOException{
 		websocketServer.onMessage(this, message);
+		for (WebSocketMessageListener listener:this.messageListeners){
+		    listener.onWebSocketMessage( message );
+		}
 	}
 	
 	public Socket getSocket() {
 		return socket;
 	}
-
+	
+	public void addMessageListener(WebSocketMessageListener listener){
+	    this.messageListeners.add( listener );
+	}
+	
+	public void removeMessageListener(WebSocketMessageListener listener){
+        this.messageListeners.remove( listener );
+    }
 }

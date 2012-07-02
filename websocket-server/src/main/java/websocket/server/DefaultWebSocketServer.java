@@ -16,6 +16,7 @@ public abstract class DefaultWebSocketServer implements WebSocketServer {
 	protected Logger logger = Logger.getLogger(DefaultWebSocketServer.class);
 	private int connectionIndex=0;
 	private boolean running=false;
+	private ServerSocket listener;
 	
 	public int getPort(){
 		return this.port;
@@ -33,7 +34,7 @@ public abstract class DefaultWebSocketServer implements WebSocketServer {
 	public void run() {
 		try{
 			logger.debug("Starting server on port "+port);
-			ServerSocket listener = new ServerSocket(port);
+			listener = new ServerSocket(port);
 			running=true;
 			while(running){
 				logger.debug("Waiting for new connection");
@@ -75,5 +76,6 @@ public abstract class DefaultWebSocketServer implements WebSocketServer {
 	    for (WebSocket connection:connections){
 	        connection.disconnect( );
 	    }
+	    listener.close();
 	}
 }

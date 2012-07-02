@@ -226,7 +226,11 @@ function getStatus(){
 		if(request.readyState==4){
 			console.log(request.responseText);
 			for (var i in request){
-				console.log(i+":  "+request[i]);
+				try{
+					console.log(i+":  "+request[i]);
+				}catch(e){
+					
+				}
 			}
 		}
 	}
@@ -334,6 +338,25 @@ ChatController = new function(){
 			var userListSelect = document.getElementById("chatUserListUsers");
 			var options=userListSelect.options;
 			var userList = message.userlist;
+			//remove any deleted users
+			var sessionMap={};
+			for (var i=0;i<userList.length;i++){
+				var user = userList[i];
+				sessionMap[user.sessionId]=1;
+			}
+			var optsToRemove=[];
+			for (i=0;i<options.length;i++){
+				var option = options[i];
+				if(!sessionMap[option.value]){
+					optsToRemove.push(option);
+				}
+			}
+			while(optsToRemove.length){
+				var option = optsToRemove.pop();
+				option.parentNode.removeChild(option);
+			}
+			sessionMap=null;
+			//add new users
 			for (var i=0,ct=userList.length;i<ct;i++){
 				var user=userList[i];
 				var sessionId=user["sessionId"];
@@ -371,12 +394,6 @@ ChatController = new function(){
 			chatWindow.appendChild(msgDiv);
 			chatWindow.scrollTop = chatWindow.scrollHeight;
 		}
-		
-		/*
-		
-		{"userSessionId":"D327F9A8EBFEDB91B891408ECF13C6C6","message":"hello","userName":"firefox","messageType":"websocket.example.chat.response.ChatUserMessage"}
-chat.jsp (line 1
-		*/
 	};
 	this.register=function(username){
 		if(websocket){
@@ -405,15 +422,10 @@ function register(){
 	<body onload="init()">
 		<div class="header">
 			<h1>WebSocket Chat test</h1>
-			<h2>(Celerity Server Implementation)</h2>
 			<p>Test implementation of a WebSocket server</p>
 			<h3>Notes:</h3>
 			<ul>
-				<li>Browsers confirmed as working: IE6 (see notes below),IE9,FireFox 6/7,Chrome 14,Opera 1.51,Safari 5.1</li>
 				<li>Internet Explorer 6 will not accept the Flash security policy provided by the websocket server.  A Flash Socket Policy server MUST be running on port 843 for IE6 to work.</li>
-				<li>Browsers using the Flash wrapper will intermittently fail the opening handshake.  Loading the page a second time will usually fix the issue.</li>
-				<li>Server still does not properly handle connection close; may stop responding on explicit disconnect</li>
-				<li>Not yet tested with IE 7-8</li>
 			</ul>
 		</div>
 		<h2>Chat Test</h2>

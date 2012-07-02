@@ -18,10 +18,6 @@ var SESSION_ID;
 	request.open("POST","echosocket/initialize.do",false);
 	SESSION_ID=request.send(null);
 })();
-		/*
-		
-
-		*/
 function loadScript(scriptURL /*,Function <callback>*/){
 	var callback=(arguments.length>1)?arguments[1]:null;
 	var ele=document.createElement('SCRIPT');

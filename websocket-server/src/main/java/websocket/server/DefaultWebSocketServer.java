@@ -14,6 +14,8 @@ public abstract class DefaultWebSocketServer implements WebSocketServer {
 	private int port;
 	protected Set<WebSocket> connections;
 	protected Logger logger = Logger.getLogger(DefaultWebSocketServer.class);
+	private int connectionIndex=0;
+	private boolean running=false;
 	
 	public int getPort(){
 		return this.port;
@@ -32,12 +34,14 @@ public abstract class DefaultWebSocketServer implements WebSocketServer {
 		try{
 			logger.debug("Starting server on port "+port);
 			ServerSocket listener = new ServerSocket(port);
-			while(true){
+			running=true;
+			while(running){
 				logger.debug("Waiting for new connection");
 				Socket server = listener.accept();
 				WebSocket connection = new WebSocket(this,server);
 				connections.add(connection);
 				Thread t = new Thread(connection);
+				t.setName("websocket_"+(connectionIndex++));
 				t.start();
 			}
 		} catch (IOException ioe) {
@@ -64,5 +68,12 @@ public abstract class DefaultWebSocketServer implements WebSocketServer {
 	
 	public int getNumConnections(){
 		return connections.size();
+	}
+	
+	public void shutdown() throws IOException{
+	    running=false;
+	    for (WebSocket connection:connections){
+	        connection.disconnect( );
+	    }
 	}
 }

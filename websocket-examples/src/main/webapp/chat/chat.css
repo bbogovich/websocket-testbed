@@ -1,0 +1,116 @@
+#chatContainer{
+	border-radius: 10px 10px 10px 10px;
+	behavior: url(../styles/PIE.htc);
+	border-color: black;
+	border-width: 2px;
+	border-style: solid;
+	padding: 10px 10px 10px 10px;
+	width: 650px;
+	background-color: #DED7DE;
+}
+#chatContainer h2{
+	text-align: center;
+	margin: 5px 0px 10px 0px;
+	padding-top:5px;padding-bottom:5px;
+	font-size: 14pt;
+	font-family: Arial,sans-serif;
+	background-color: white;
+	border-radius: 10px 10px 10px 10px;
+	behavior: url(../styles/PIE.htc);
+	border-width:2px;
+	border-color: gray;
+	border-style: solid;
+}
+#chatOutput{
+	height: 250px;
+	border: 1px black solid;
+	overflow-y: scroll;
+	width: 520px;
+	overflow-x: auto;
+}
+#userList{
+	float:left;
+	width: 110px;
+	text-align: center;
+	background-color: #f0f0f0;
+	border-right: 1px gray solid;
+}
+#chatContainer .inner{
+	background-color: #f0f0f0;
+	padding: 5px 5px 5px 5px;
+	border: 1px #0a0a0a solid;
+	border-radius: 0px 0px 5px 5px;
+	behavior: url(../styles/PIE.htc);
+	
+}
+#chatContainer #chatInputContainer{
+	margin-top: 5px;
+}
+#chatContainer #chatInput input{
+	border: 1px gray solid;
+	width: 520px;
+}
+#chatContainer #chatInput button{
+	width: 100px;
+}
+#chatOutput{
+	float:left;
+	background-color: white;
+}
+#chatOutput .receivedWebSocketMessage{
+	color: gray;
+	font-style: italic;
+}
+#userList select{
+	height: 215px;
+	width: 100px;
+}
+.clear{
+	clear:both;
+}
+#chatContainer h3{
+	font-size: 12pt;
+	margin: 5px 0 5px 5px;
+	font-family: Arial,sans-serif;
+	background-color: white;
+	border-radius: 7px 7px 7px 7px;
+	behavior: url(../styles/PIE.htc);
+	border-width: 2px;
+	border-style: solid;
+	border-color: lightgray;
+	width: 98px
+}
+#chatOutput .label{width: 75px;background-color: beige;color:black;font-weight:bold;float:left;padding-left:2px;}
+#chatOutput .text{background-color: white;color:black;font-weight:normal;padding-left: 5px;float:left;}
+#chatOutput .message{border-bottom: 1px gray solid;}
+.console{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 500px;
+	height: 500px;
+	border: 2px gray solid;
+	overflow: scroll;
+	font-family: monospace;
+	font-size: 10pt;
+}
+.console div{
+	border-bottom: 1px gray solid;
+	padding: 5px 5px 5px 5px;
+}
+.console .log{
+	color: black;
+}
+.console .warn{
+	color: #0000ff;
+}
+.console .error{
+	color: #ff0000;
+	font-weight: bold;
+}
+.header{
+	margin-right: 500px;
+}
+.hidden{
+	display:none;
+}

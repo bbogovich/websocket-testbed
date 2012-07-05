@@ -2,7 +2,8 @@ ChatController = new function(){
 	var $this=this;
 	var websocket=null;
 	var port=8084;
-	
+	var websocketOpen=false;
+    
 	this.outputContainer=null;
 	this.connect=function(){
 		openWebSocket();

@@ -10,5 +10,12 @@
 target/*
 */target
 */target/*
+<<<<<<< HEAD
 .c9revisions/
 .c9revisions/*
+=======
+websocket-examples/bin
+websocket-examples/bin/*
+websocket-server/bin
+websocket-server/bin/*
+>>>>>>> Added eclipse output directories for child projects to .gitignore
